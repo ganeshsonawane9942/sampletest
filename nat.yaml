@@ -1,0 +1,28 @@
+apiVersion: compute.cnrm.cloud.google.com/v1beta1
+kind: ComputeRouterNAT
+metadata: # kpt-merge: networking/network-name-router-nat
+  name: natabcd-router-nat # kpt-set: ${prefix}${network-name}-router-nat
+  namespace: config-control # kpt-set: ${namespace}
+  annotations:
+    cnrm.cloud.google.com/project-id: searce-sandbox-355505 # kpt-set: ${project-id}
+    cnrm.cloud.google.com/blueprint: cnrm/landing-zone:networking/v0.4.0,kpt-pkg-fn-live
+spec:
+  natIpAllocateOption: AUTO_ONLY
+  region: australia-southeast1 # kpt-set: ${region}
+  routerRef:
+    name: natabcd-router # kpt-set: ${prefix}${network-name}-router
+  sourceSubnetworkIpRangesToNat: ALL_SUBNETWORKS_ALL_IP_RANGES # kpt-set: ${source-subnetwork-ip-ranges-to-nat}
+---
+apiVersion: compute.cnrm.cloud.google.com/v1beta1
+kind: ComputeRouter
+metadata: # kpt-merge: networking/network-name-router
+  name: natabcd-router # kpt-set: ${prefix}${network-name}-router
+  namespace: config-control # kpt-set: ${namespace}
+  annotations:
+    cnrm.cloud.google.com/project-id: searce-sandbox-355505 # kpt-set: ${project-id}
+    cnrm.cloud.google.com/blueprint: cnrm/landing-zone:networking/v0.4.0,kpt-pkg-fn-live
+spec:
+  description: example router description
+  networkRef:
+    name: abcd # kpt-set: ${network-name}
+  region: australia-southeast1 # kpt-set: ${region}

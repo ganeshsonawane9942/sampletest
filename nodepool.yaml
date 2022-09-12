@@ -1,0 +1,34 @@
+apiVersion: container.cnrm.cloud.google.com/v1beta1
+kind: ContainerNodePool
+metadata: # kpt-merge: config-control/example-us-east4-primary
+  name: mxclusternew-primary # kpt-set: ${cluster-name}-${nodepool-name}
+  namespace: config-control # kpt-set: ${platform-namespace}
+  annotations:
+    cnrm.cloud.google.com/blueprint: cnrm/gke:gke-nodepool/v0.4.0,kpt-pkg-fn-live
+    cnrm.cloud.google.com/project-id: searce-sandbox-355505 # kpt-set: ${project-id}
+spec:
+  autoscaling:
+    maxNodeCount: 2 # kpt-set: ${max-node-count}
+    minNodeCount: 1
+  clusterRef:
+    name: mxclusternew # kpt-set: ${cluster-name}
+  initialNodeCount: 1
+  location: australia-southeast1 # kpt-set: ${location}
+  # Enable auto repairs and upgrades by default.
+  # Disable if you have workloads that cannot tollerate disruption.
+  management:
+    autoRepair: true
+    autoUpgrade: true
+  # Default reduced to better fit on e2-standard-16 machines.
+  # 4 pods per vCPU, 8 pods per physical core, ~1 pod per GB of memory. 
+  maxPodsPerNode: 100
+  nodeConfig:
+    labels:
+      gke.io/nodepool: primary # kpt-set: ${nodepool-name}
+    diskSizeGb: 100
+    diskType: pd-ssd
+    machineType: e2-standard-16
+    oauthScopes:
+      - https://www.googleapis.com/auth/cloud-platform
+    serviceAccountRef:
+      name: gke-mxclusternew-primary # kpt-set: gke-${cluster-name}-${nodepool-name}

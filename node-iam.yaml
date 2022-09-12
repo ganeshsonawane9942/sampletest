@@ -1,0 +1,67 @@
+apiVersion: iam.cnrm.cloud.google.com/v1beta1
+kind: IAMServiceAccount
+metadata: # kpt-merge: config-control/gke-example-us-east4-primary
+  name: gke-mxclusternew-primary # kpt-set: gke-${cluster-name}-${nodepool-name}
+  namespace: config-control # kpt-set: ${platform-namespace}
+  annotations:
+    cnrm.cloud.google.com/blueprint: cnrm/gke:gke-nodepool/v0.4.0,kpt-pkg-fn-live
+    cnrm.cloud.google.com/project-id: searce-sandbox-355505 # kpt-set: ${project-id}
+spec:
+  displayName: gke-mxclusternew-primary # kpt-set: gke-${cluster-name}-${nodepool-name}
+---
+# Allow fluentd to send logs to StackDriver
+apiVersion: iam.cnrm.cloud.google.com/v1beta1
+kind: IAMPolicyMember
+metadata: # kpt-merge: config-control/logwriter-gke-example-us-east4-primary
+  name: logwriter-gke-mxclusternew-primary # kpt-set: logwriter-gke-${cluster-name}-${nodepool-name}
+  namespace: config-control # kpt-set: ${platform-namespace}
+  annotations:
+    cnrm.cloud.google.com/blueprint: cnrm/gke:gke-nodepool/v0.4.0,kpt-pkg-fn-live
+spec:
+  memberFrom:
+    serviceAccountRef:
+      name: gke-mxclusternew-primary # kpt-set: gke-${cluster-name}-${nodepool-name}
+      namespace: config-control # kpt-set: ${platform-namespace}
+  resourceRef:
+    apiVersion: resourcemanager.cnrm.cloud.google.com/v1beta1
+    kind: Project
+    external: searce-sandbox-355505 # kpt-set: ${project-id}
+  role: roles/logging.logWriter
+---
+# Allow fluentd to send metrics to StackDriver
+apiVersion: iam.cnrm.cloud.google.com/v1beta1
+kind: IAMPolicyMember
+metadata: # kpt-merge: config-control/metricwriter-gke-example-us-east4-primary
+  name: metricwriter-gke-mxclusternew-primary # kpt-set: metricwriter-gke-${cluster-name}-${nodepool-name}
+  namespace: config-control # kpt-set: ${platform-namespace}
+  annotations:
+    cnrm.cloud.google.com/blueprint: cnrm/gke:gke-nodepool/v0.4.0,kpt-pkg-fn-live
+spec:
+  memberFrom:
+    serviceAccountRef:
+      name: gke-mxclusternew-primary # kpt-set: gke-${cluster-name}-${nodepool-name}
+      namespace: config-control # kpt-set: ${platform-namespace}
+  resourceRef:
+    apiVersion: resourcemanager.cnrm.cloud.google.com/v1beta1
+    kind: Project
+    external: searce-sandbox-355505 # kpt-set: ${project-id}
+  role: roles/monitoring.metricWriter
+---
+# Allow kubelet/docker/containerd to read all artifacts/images in the project-id project
+apiVersion: iam.cnrm.cloud.google.com/v1beta1
+kind: IAMPolicyMember
+metadata: # kpt-merge: config-control/artifactreader-gke-example-us-east4-primary
+  name: artifactreader-gke-mxclusternew-primary # kpt-set: artifactreader-gke-${cluster-name}-${nodepool-name}
+  namespace: config-control # kpt-set: ${platform-namespace}
+  annotations:
+    cnrm.cloud.google.com/blueprint: cnrm/gke:gke-nodepool/v0.4.0,kpt-pkg-fn-live
+spec:
+  memberFrom:
+    serviceAccountRef:
+      name: gke-mxclusternew-primary # kpt-set: gke-${cluster-name}-${nodepool-name}
+      namespace: config-control # kpt-set: ${platform-namespace}
+  resourceRef:
+    apiVersion: resourcemanager.cnrm.cloud.google.com/v1beta1
+    kind: Project
+    external: searce-sandbox-355505 # kpt-set: ${project-id}
+  role: roles/artifactregistry.reader
