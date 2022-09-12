@@ -4,7 +4,7 @@ metadata:
   name: setters
   namespace: config-control
 data:
-  network-name: abcd
+  network-name: xyzw
   project-id: searce-sandbox-355505
   region: australia-southeast1
   prefix: nat

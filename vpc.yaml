@@ -1,7 +1,7 @@
 apiVersion: compute.cnrm.cloud.google.com/v1beta1
 kind: ComputeNetwork
 metadata:
-  name: abcd # kpt-set: ${network-name}
+  name: xyzw # kpt-set: ${network-name}
   namespace: config-control # kpt-set: ${namespace}
   annotations:
     cnrm.cloud.google.com/blueprint: cnrm/landing-zone:networking/v0.4.1,kpt-fn
